@@ -16,7 +16,7 @@ import java.util.List;
 public class MainController {
 
     private static final Logger logger = Logger.getLogger(MainController.class);
-    private List<SseEmitter> sseEmitters = Collections.synchronizedList(new ArrayList<>());
+    private List<Object> sseEmitters = Collections.synchronizedList(new ArrayList<>());
 
     @RequestMapping("/")
     public String landing(Model model) {
