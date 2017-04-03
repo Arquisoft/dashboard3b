@@ -28,6 +28,7 @@ import util.Encriptador;
 import util.VerificadorEmail;
 
 @Controller
+
 public class MainController {
 
 	private static final Logger logger = Logger.getLogger(MainController.class);

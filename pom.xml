@@ -147,6 +147,13 @@
     	<scope>compile</scope>
 	</dependency>
 
+
+	<!-- BOOTSTRAP -->
+	<dependency>
+    <groupId>org.webjars</groupId>
+    <artifactId>bootstrap</artifactId>
+    <version>3.2.0</version>
+</dependency>
 	</dependencies>
 
 	<dependencyManagement>
