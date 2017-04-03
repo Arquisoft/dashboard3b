@@ -13,7 +13,7 @@
 	<context:annotation-config />
  	<aop:config proxy-target-class="true"/>
  	
-	<context:component-scan base-package="participants3b" />
+	<context:component-scan base-package="dashboard0" />
  
 	<mvc:annotation-driven /> 
  

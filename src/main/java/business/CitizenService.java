@@ -1,8 +1,8 @@
 package business;
 
 
+import model.Citizen;
 import model.Sugerencia;
-
 import model.exception.BusinessException;
 
 public interface CitizenService {
@@ -12,5 +12,8 @@ public interface CitizenService {
 	public void deleteSugerencia(Long id) throws BusinessException;
 	
 	public void deleteComentario(Long id) throws BusinessException;
-
+	
+	public void changePassword(Citizen user, String newPassword) throws BusinessException;
+	
+	public void changeEmail(Citizen user, String email)throws BusinessException;
 }

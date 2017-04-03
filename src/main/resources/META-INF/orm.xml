@@ -6,17 +6,40 @@
   	version="2.0">
   	
 
+	
 	<named-query name="Citizen.findByDNI">
-		<query>select c from UserInfo c where c.dni = ?1</query>
+		<query>select c from Citizen c where c.DNI = ?1</query>
 	</named-query>
 
 	<named-query name="Citizen.findAll">
-		<query>select c from UserInfo c</query>
-	</named-query>
-
-	<named-query name="Citizen.findByUser">
-		<query>select c from UserInfo c where c.usuario = ?1</query>
+		<query>select c from Citizen c</query>
 	</named-query>
 	
+	<named-query name="Categoria.findAll">
+		<query>select c from Categoria c</query>
+	</named-query>
+	
+	<named-query name="Sugerencia.findAll">
+		<query>select s from Sugerencia s</query>
+	</named-query>
+	
+	<named-query name="Sugerencia.findByCategory">
+		<query>select s from Sugerencia s where s.categoria.id = ?1</query>
+	</named-query>
+	
+	<named-query name="Sugerencia.findByUser">
+		<query>select s from Sugerencia s where s.citizen.id = ?1</query>
+	</named-query>
+	
+	<named-query name="Citizen.findByUserAndPass">
+		<query>select c from Citizen c 
+			   where c.usuario = ?1 and c.password = ?2 </query>
+	</named-query>
+	
+	<named-query name="Administrador.findByUserAndPass">
+		<query>select a from Administrador a 
+			   where a.usuario = ?1 and a.password = ?2 </query>
+	</named-query>
+
 
 </entity-mappings>

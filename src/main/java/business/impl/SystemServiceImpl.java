@@ -34,4 +34,16 @@ public class SystemServiceImpl extends SuperService implements SystemService {
 		return (List<Sugerencia>) cmd.execute(new FindSugerenciasByCategory(idCategory));
 	}
 
+	@Override
+	public Citizen findLoggableCitizen(String user, String password)
+			throws BusinessException {
+		return (Citizen) cmd.execute(new FindLoggableCitizen(user,password));
+	}
+
+	@Override
+	public Administrador findLoggableAdmin(String usuario, String password)
+			throws BusinessException {
+		return (Administrador) cmd.execute(new FindLoggableAdmin(usuario, password));
+	}
+
 }

@@ -1,5 +1,7 @@
 package business.impl;
 
+import persistence.CitizenFinder;
+import util.Encriptador;
 import business.CitizenService;
 import business.impl.citizen.*;
 import model.*;
@@ -29,6 +31,25 @@ public class CitizenServiceImpl extends SuperService implements CitizenService {
 		
 	}
 
+
+
+
+	@Override
+	public void changePassword(Citizen user, String newPassword) throws BusinessException {
+	
+		if(CitizenFinder.findByUser(user.getUsuario())!=null){
+			user.setPassword(Encriptador.encriptar(newPassword));
+			cmd.execute(new UpdateCitizen(user));
+		}
+	}
+
+	@Override
+	public void changeEmail(Citizen user, String email) throws BusinessException {
+		if(CitizenFinder.findByUser(user.getUsuario())!=null){
+			user.setEmail(email);
+			cmd.execute(new UpdateCitizen(user));
+		}
+	}
 	
 
 }
