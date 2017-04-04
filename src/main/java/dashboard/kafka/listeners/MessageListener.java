@@ -2,7 +2,10 @@ package dashboard.kafka.listeners;
 
 import javax.annotation.ManagedBean;
 
+import model.Comentario;
 import model.Sugerencia;
+import model.VotoComentario;
+import model.VotoSugerencia;
 
 import org.apache.log4j.Logger;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -31,15 +34,59 @@ public class MessageListener {
         		"  [id=" + sugg.getId() + "] " + sugg.getTitulo());
     }
     
+    @KafkaListener(topics = "DELETE_SUGGESTION")
+    public void deleteSuggestion(String data) {
+    	Sugerencia sugg = Message.getSugerenciaFromJSON(data);
+        logger.info("New message received: [ELIMINAR SUGERENCIA]  \"" +  data + "\"");
+        
+        logger.info("[ELIMINAR SUGERENCIA] Autor de la accion [id="+sugg.getCitizen().getId()+"] " + sugg.getCitizen().getNombre() + 
+        		"  [id=" + sugg.getId() + "] " + sugg.getTitulo());
+    }
     
+    @KafkaListener(topics = "VOTE_SUGGESTION_POSITIVE")
+    public void voteSuggPositive(String data) {
+    	VotoSugerencia voto = Message.getVotoSugerenciaFromJSON(data);
+        logger.info("New message received: [VOTAR POSITIVO SUGERENCIA]  \"" +  data + "\"");
+        
+        logger.info("[VOTAR POSITIVO SUGERENCIA] Autor de la accion [id="+voto.getCitizen().getId()+"] " +
+        voto.getCitizen().getNombre());
+    }
+    
+    
+    @KafkaListener(topics = "VOTE_SUGGESTION_NEGATIVE")
+    public void voteSuggNegative(String data) {
+    	VotoSugerencia voto = Message.getVotoSugerenciaFromJSON(data);
+        logger.info("New message received: [VOTAR NEGATIVO SUGERENCIA]  \"" +  data + "\"");
+        
+        logger.info("[VOTAR NEGATIVO SUGERENCIA] Autor de la accion [id="+voto.getCitizen().getId()+"] " +
+        voto.getCitizen().getNombre());
+    }
+    
+    @KafkaListener(topics = "COMMENT_SUGGESTION")
+    public void commentSuggestion(String data) {
+    	Comentario comentario = Message.getComentarioFromJSON(data);
+        logger.info("New message received: [COMENTAR SUGERENCIA]  \"" +  data + "\"");
+        
+        logger.info("[COMENTARS SUGERENCIA] Autor del comentario [id="+ comentario.getCitizen().getId()+"] " +
+        comentario.getCitizen().getNombre()+ " en la sugerencia: " + comentario.getSugerencia());
+    }
+    @KafkaListener(topics = "DELETE_COMMENT")
+    public void deleteComment(String data) {
+    	Comentario comentario = Message.getComentarioFromJSON(data);
+        logger.info("New message received: [ELIMINAR COMENTARIO]  \"" +  data + "\"");
+        
+        logger.info("[ELIMINAR COMENTARIO] Autor del comentario [id="+ comentario.getCitizen().getId()+"] " +
+        comentario.getCitizen().getNombre()+ " en la sugerencia: " + comentario.getSugerencia());
+    }
 
-//	public final static String CREATE_SUGGESTION = "CREATE_SUGGESTION";
-//	public final static String DELETE_SUGGESTION ="DELETE_SUGGESTION";
-//	public final static String VOTE_SUGGESTION_POSITIVE = "VOTE_SUGGESTION_POSITIVE";
-//	public final static String VOTE_SUGGESTION_NEGATIVE = "VOTE_SUGGESTION_NEGATIVE";
-//	
-//	public final static String COMMENT_SUGGESTION = "COMMENT_SUGGESTION";
-//	public final static String DELETE_COMMENT = "DELETE_COMMENT";
-//	public final static String VOTE_COMMENT = "VOTE_COMMENT";
+    @KafkaListener(topics = "VOTE_COMMENT")
+    public void voteComment(String data) {
+    	VotoComentario votoComentario = Message.getVotoComentarioFromJSON(data);
+        logger.info("New message received: [ELIMINAR COMENTARIO]  \"" +  data + "\"");
+        
+        logger.info("[ELIMINAR COMENTARIO] Autor de la accion [id="+ votoComentario.getCitizen().getId()+"] " +
+        votoComentario.getCitizen().getNombre()+ " en el comentario: " + votoComentario.getComentario());
+    }
+
 
 }

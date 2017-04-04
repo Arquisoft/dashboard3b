@@ -1,7 +1,7 @@
 package model;
 
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 
 import com.google.gson.annotations.Expose;
 
-import model.Sugerencia;
+import model.exception.BusinessException;
 
 @SuppressWarnings("serial")
 @Entity
@@ -114,9 +114,14 @@ public class Categoria implements Serializable{
 		return new HashSet<>(sugerencias);
 	}
 	
-	public void borrar(){
+	public void borrar(Categoria c) throws BusinessException{
+	
+		palabrasNoPermitidas = new ArrayList<String>();
+
 		for(Sugerencia s:sugerencias){
 			Association.Sugerir.unlink(s, this);
+			Association.Sugerir.link(s, c);
+
 		}
 	}
 

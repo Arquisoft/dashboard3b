@@ -1,5 +1,6 @@
 package business;
 
+import model.Administrador;
 import model.Categoria;
 import model.exception.BusinessException;
 
@@ -12,4 +13,6 @@ public interface AdminService {
 	public void deleteSugerencia(Long id) throws BusinessException;
 
 	void addCategoria(Categoria categoria) throws BusinessException;
+	
+	public Administrador addAdmin(Administrador admin) throws BusinessException;
 }

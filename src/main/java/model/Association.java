@@ -27,6 +27,11 @@ public class Association {
 			
 			sugerencia._setCategoria(null);
 		}
+		
+		public static void link(Sugerencia sugerencia, Categoria categoria){
+			sugerencia._setCategoria(categoria);
+			categoria._getSugerencias().add(sugerencia);
+		}
 
 	}
 	
@@ -68,6 +73,8 @@ public class Association {
 			voto._setComentario(null);
 			voto._setCitizen(null);			
 		}
+		
+	
 
 	}
 	

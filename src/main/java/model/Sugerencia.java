@@ -3,8 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -14,11 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import com.google.gson.annotations.Expose;
-import model.Citizen;
-import model.Comentario;
+
 import model.types.SugerenciaStatus;
-import scala.collection.parallel.ParIterableLike.Collect;
+import business.Services;
+
+import com.google.gson.annotations.Expose;
+
+import model.exception.BusinessException;
+import persistence.util.Jpa;
 
 @SuppressWarnings("serial")
 @Entity
@@ -115,7 +117,7 @@ public class Sugerencia implements Serializable{
 	public int getPosVotes() {
 		return votos.stream().filter(v->v.isAFavor()).toArray().length;
 	}
-	
+
 	public int getNegVotes() {
 		return votos.stream().filter(v->!v.isAFavor()).toArray().length;
 	}
@@ -124,7 +126,11 @@ public class Sugerencia implements Serializable{
 		return getPosVotes() - getNegVotes();
 	}
 
-	public void borrar(){
+	public void borrar() throws BusinessException{
+		for(Comentario c:comentarios)
+			Services.getCitizenServices().deleteComentario(c.getId());
+		for(VotoSugerencia v:votos)
+			Jpa.getManager().remove(v);
 		Association.Sugerir.unlink(citizen,this, categoria);
 	}
 

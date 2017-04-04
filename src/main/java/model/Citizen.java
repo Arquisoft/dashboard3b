@@ -32,6 +32,7 @@ public class Citizen implements Serializable{
 	@Expose @NotNull private String DNI;
 	@Expose private String usuario;
 	@Expose private String password;
+	
 	//---------------------------------------------------------------------------
 	@OneToMany(mappedBy="citizen") 
 	private Set<Sugerencia> sugerencias = new HashSet<>();
@@ -42,7 +43,7 @@ public class Citizen implements Serializable{
 	@OneToMany(mappedBy="citizen") 
 	private Set<VotoSugerencia> votosSugerencias = new HashSet<>();
 
-	 
+	
 	
 	public Citizen(){}
 

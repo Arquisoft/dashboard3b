@@ -30,7 +30,11 @@ public class CitizenFinder {
 	}
 
 	public static Citizen findLoggableCitizen(String user, String password) {
-		return Jpa.getManager().createNamedQuery("Citizen.findByUserAndPass", Citizen.class).
-				setParameter(1, user).setParameter(2, password).getSingleResult();
+		List<Citizen> r=Jpa.getManager().createNamedQuery("Citizen.findByUserAndPass", Citizen.class).
+				setParameter(1, user).setParameter(2, password).getResultList();
+		if (r.isEmpty())
+			return null;
+
+		return r.get(0);
 	}
 }

@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import com.google.gson.annotations.Expose;
 
+import persistence.util.Jpa;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name="TCOMENTARIO")
@@ -84,6 +86,10 @@ public class Comentario implements Serializable{
 	}
 
 	public void borrar() {
+		for(VotoComentario vc:votos){
+			//Association.VotarComentario.unlink(this, vc, citizen);
+			Jpa.getManager().remove(vc);
+		}
 		Association.Comentar.unlink(citizen, this, sugerencia);
 	}
 	@Override

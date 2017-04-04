@@ -6,7 +6,10 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.Calendar;
 
+import model.Categoria;
 import model.Citizen;
+import model.Comentario;
+import model.Sugerencia;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +21,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import business.CitizenService;
 import business.impl.CitizenServiceImpl;
 import controller.Application;
+import dashboard.kafka.Message;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,25 +29,32 @@ import controller.Application;
 @WebAppConfiguration
 public class kafkaTest {
 	
-	
+	Citizen testCitizen;
+	Categoria testCategoria;
+	Sugerencia testSugerencia;
+	Comentario testComentario;
 	
 	@Before
 	public void setUp() {
-		
-
+		Date fecha = new Date(0,0,0);
+		testCitizen= new Citizen("nombre", "apellidos","testemail@email",fecha , "direccion",
+				"nacionalidad","DNI", "usuario", "password");
+		testCategoria = new Categoria("testCategoria",fecha,fecha, 2);
+		testSugerencia = new Sugerencia(testCitizen,"titulo", "contenido", testCategoria);
+		testComentario = new Comentario(testCitizen,testSugerencia,"contenido" );
 	}
 	
 
 	@Test
-	public void testFinder(){
+	public void testGSON(){
+		String comentario = Message.setMessage(testComentario);
+		Comentario comentarioDeJSON=Message.getComentarioFromJSON(comentario);
 		
-		
-		
+		assertEquals(comentarioDeJSON, testComentario);
 	}
 
 	private void limpiarTest(){
-//		EliminarTester.borrarTester(testUser.getUsuario());
-//		EliminarTester.borrarTester(testUser2.getUsuario());
+
 	}
 
 }

@@ -55,9 +55,9 @@ public class CitizenServiceImpl extends SuperService implements CitizenService {
 
 	@Override
 	public Citizen addCitizen(Citizen ciudadano) throws BusinessException {
-		if(CitizenFinder.findByUser(ciudadano.getUsuario())==null){
+//		if(CitizenFinder.findLoggableCitizen(ciudadano.getUsuario(), ciudadano.getPassword())==null){
 			cmd.execute(new AddCitizen(ciudadano));
-		}return ciudadano;
+			return ciudadano;
 	}	
 	
 

@@ -7,6 +7,10 @@
   	
 
 	
+	<named-query name="Citizen.findByUser">
+		<query>select c from Citizen c where c.usuario = ?1</query>
+	</named-query>
+	
 	<named-query name="Citizen.findByDNI">
 		<query>select c from Citizen c where c.DNI = ?1</query>
 	</named-query>

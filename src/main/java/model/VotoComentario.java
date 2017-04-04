@@ -9,9 +9,9 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import model.types.VotosComentariosKey;
-
 import com.google.gson.annotations.Expose;
+
+import model.types.VotosComentariosKey;
 
 @SuppressWarnings("serial")
 @Entity

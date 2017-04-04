@@ -17,8 +17,7 @@ import org.xml.sax.SAXException;
 public class Jpa {
 
 	private static EntityManagerFactory emf = null;
-	private static ThreadLocal<EntityManager> emThread = 
-		new ThreadLocal<EntityManager>();
+	private static ThreadLocal<EntityManager> emThread = new ThreadLocal<EntityManager>();
 	
 	public static EntityManager createEntityManager() {
 		EntityManager entityManager = getEmf().createEntityManager();
