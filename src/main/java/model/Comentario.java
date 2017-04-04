@@ -12,16 +12,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.google.gson.annotations.Expose;
+
 @SuppressWarnings("serial")
 @Entity
-@Table(name="TComentario")
+@Table(name="TCOMENTARIO")
 public class Comentario implements Serializable{
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
-	@ManyToOne
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Expose private long id;
+	@ManyToOne @Expose
 	private Citizen citizen;
-	@ManyToOne
+	@ManyToOne @Expose
 	private Sugerencia sugerencia;
-	private String contenido;
+	@Expose private String contenido;
 	@OneToMany(mappedBy="comentario") 
 	private Set<VotoComentario> votos = new HashSet<>();
 	
@@ -68,7 +70,22 @@ public class Comentario implements Serializable{
 	public long getId() {
 		return id;
 	}
+	
+	public int getPosVotes() {
+		return votos.stream().filter(v->v.isAFavor()).toArray().length;
+	}
 
+	public int getNegVotes() {
+		return votos.stream().filter(v->!v.isAFavor()).toArray().length;
+	}
+	
+	public int getVotosTotal() {
+		return getPosVotes() - getNegVotes();
+	}
+
+	public void borrar() {
+		Association.Comentar.unlink(citizen, this, sugerencia);
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

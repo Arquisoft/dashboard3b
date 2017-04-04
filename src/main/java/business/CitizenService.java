@@ -7,6 +7,8 @@ import model.exception.BusinessException;
 
 public interface CitizenService {
 	
+	public Citizen addCitizen(Citizen ciudadano) throws BusinessException;
+	
 	public void updateSugerencia(Sugerencia sugerencia) throws BusinessException;
 	
 	public void deleteSugerencia(Long id) throws BusinessException;

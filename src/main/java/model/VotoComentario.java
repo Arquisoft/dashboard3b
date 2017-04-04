@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,18 +11,22 @@ import javax.persistence.Table;
 
 import model.types.VotosComentariosKey;
 
+import com.google.gson.annotations.Expose;
+
 @SuppressWarnings("serial")
 @Entity
 @IdClass(VotosComentariosKey.class)
-@Table(name="TVotoComentario")
+@Table(name="TVOTOCOMENTARIO")
 public class VotoComentario implements Serializable{
-	@Id @ManyToOne private Comentario comentario;
-	@Id @ManyToOne private Citizen citizen;
-	private boolean isAFavor;
+	@Id @ManyToOne @Expose private Comentario comentario;
+	@Id @ManyToOne @Expose private Citizen citizen;
+	@Expose private boolean isAFavor;
 
 	public VotoComentario(Comentario comentario, Citizen citizen, boolean isAFavor) {
 		super();
 		this.isAFavor = isAFavor;
+		if (!comentario.getVotos().stream().map(v->v.getCitizen().getId()).
+				collect(Collectors.toList()).contains(citizen.getId()))
 		Association.VotarComentario.link(comentario,this,citizen);
 	}
 	public VotoComentario() {}

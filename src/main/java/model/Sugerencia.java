@@ -3,7 +3,8 @@ package model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,25 +14,29 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+import com.google.gson.annotations.Expose;
+import model.Citizen;
+import model.Comentario;
 import model.types.SugerenciaStatus;
+import scala.collection.parallel.ParIterableLike.Collect;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="TSugerencia")
+@Table(name="TSUGERENCIA")
 public class Sugerencia implements Serializable{
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
-	@ManyToOne
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Expose private long id;
+	@ManyToOne @Expose
 	private Citizen citizen;
-	private String titulo;
-	private String contenido;
+	@Expose private String titulo;
+	@Expose private String contenido;
 	@OneToMany(mappedBy="sugerencia") 
 	private Set<Comentario> comentarios = new HashSet<>();
 	@OneToMany(mappedBy="sugerencia") 
 	private Set<VotoSugerencia> votos = new HashSet<>();
-	@Enumerated(EnumType.STRING) private SugerenciaStatus estado;
-	@ManyToOne
+	@Expose @Enumerated(EnumType.STRING) private SugerenciaStatus estado;
+	@ManyToOne @Expose
 	private Categoria categoria;
+	
 	
 	public Sugerencia(Citizen citizen, String titulo, String contenido, Categoria categoria) {
 		super();
@@ -76,6 +81,10 @@ public class Sugerencia implements Serializable{
 	public void setEstado(SugerenciaStatus estado) {
 		this.estado = estado;
 	}
+	
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
 
 	public Categoria getCategoria() {
 		return categoria;
@@ -101,6 +110,22 @@ public class Sugerencia implements Serializable{
 	}
 	public Set<VotoSugerencia> getVotos() {
 		return new HashSet<>(votos);
+	}
+
+	public int getPosVotes() {
+		return votos.stream().filter(v->v.isAFavor()).toArray().length;
+	}
+	
+	public int getNegVotes() {
+		return votos.stream().filter(v->!v.isAFavor()).toArray().length;
+	}
+	
+	public int getVotosTotal() {
+		return getPosVotes() - getNegVotes();
+	}
+
+	public void borrar(){
+		Association.Sugerir.unlink(citizen,this, categoria);
 	}
 
 	@Override

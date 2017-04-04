@@ -1,11 +1,15 @@
 package model;
 
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,20 +19,27 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.google.gson.annotations.Expose;
+
+import model.Sugerencia;
+
 @SuppressWarnings("serial")
 @Entity
-@Table(name="TCategoria")
+@Table(name="TCATEGORIA")
 public class Categoria implements Serializable{
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Expose private long id;
 	@OneToMany(mappedBy="categoria") 
 	private Set<Sugerencia> sugerencias = new HashSet<>();
-	private String nombre;
+	@Expose private String nombre;
 	@Temporal(TemporalType.DATE)
-	private Date fechaInicio;
+	@Expose private Date fechaInicio;
 	@Temporal(TemporalType.DATE)
-	private Date fechaFin;
-	private int minimoVotos;
-	private List<String> palabrasNoPermitidas;
+	@Expose private Date fechaFin;
+	@Expose private int minimoVotos;
+	@ElementCollection
+    @CollectionTable(name = "TPALABRAS")
+    @Column(name="PALABRA")
+	@Expose private List<String> palabrasNoPermitidas;
 	
 	public Categoria(String nombre, Date fechaInicio, Date fechaFin, int minimoVotos) {
 		super();
@@ -101,6 +112,12 @@ public class Categoria implements Serializable{
 	
 	public Set<Sugerencia> getSugerencias() {
 		return new HashSet<>(sugerencias);
+	}
+	
+	public void borrar(){
+		for(Sugerencia s:sugerencias){
+			Association.Sugerir.unlink(s, this);
+		}
 	}
 
 	@Override

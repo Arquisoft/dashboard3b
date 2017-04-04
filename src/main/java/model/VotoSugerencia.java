@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,21 +9,25 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.google.gson.annotations.Expose;
+
 import model.types.VotosSugerenciasKey;
 
 @SuppressWarnings("serial")
 @Entity
 @IdClass(VotosSugerenciasKey.class)
-@Table(name="TVotoSugerencia")
+@Table(name="TVOTOSUGERENCIA")
 public class VotoSugerencia implements Serializable{
 
-	@Id @ManyToOne private Sugerencia sugerencia;
-	@Id @ManyToOne private Citizen citizen;
-	private boolean isAFavor;
+	@Id @ManyToOne @Expose private Sugerencia sugerencia;
+	@Id @ManyToOne @Expose private Citizen citizen;
+	@Expose private boolean isAFavor;
 	
 	public VotoSugerencia(Sugerencia sugerencia, Citizen citizen, boolean isAFavor) {
 		super();
 		this.isAFavor = isAFavor;
+		if (!sugerencia.getVotos().stream().map(v->v.getCitizen().getId()).
+				collect(Collectors.toList()).contains(citizen.getId()))
 		Association.VotarSugerencia.link(sugerencia,this,citizen);
 	}
 

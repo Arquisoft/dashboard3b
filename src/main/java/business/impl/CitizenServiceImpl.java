@@ -50,6 +50,15 @@ public class CitizenServiceImpl extends SuperService implements CitizenService {
 			cmd.execute(new UpdateCitizen(user));
 		}
 	}
+
+
+
+	@Override
+	public Citizen addCitizen(Citizen ciudadano) throws BusinessException {
+		if(CitizenFinder.findByUser(ciudadano.getUsuario())==null){
+			cmd.execute(new AddCitizen(ciudadano));
+		}return ciudadano;
+	}	
 	
 
 }
