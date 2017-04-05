@@ -1,35 +1,39 @@
-<html>
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
 
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="css/error.css" type="text/css"
-	media="all"/>
-<title>Login</title>
-</head>
-<body>
-	<form action="entrar" method="post">
-	<table border="0">
-        <tr>
-             <td colspan="5" align="center"><h2>Inicie sesión</h2></td>
-        </tr>
-        <tr id="err">  	
-        	<td>
-			 <span th:text="${err}"/>	
-			 </td>
-		</tr>
-        <tr>
-            <td>Nombre de usuario:</td>
-            <td align="right"><input type="text" name="nombre"/></td>
-        </tr>
-        <tr>
-            <td>Contraseña: </td>
-            <td align="right"><input type="password" name="password"/></td>
-        </tr>
-        <tr>
-        </tr>
-        
-    </table>
-    	<input type="submit" value="Entrar"/>
-    </form>
-</body>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <meta charset="utf-8"/> 
+    <title>Signin </title>
+
+    <link th:href="@{/webjars/github-com-twbs-bootstrap/v3.3.7/docs/dist/css/bootstrap.min.css}" media="screen" rel="stylesheet"/>
+    <link th:href="@{/webjars/github-com-twbs-bootstrap/v3.3.7/docs/assets/css/ie10-viewport-bug-workaround.css}"  media="screen" rel="stylesheet"/>
+    <link th:href="@{/webjars/github-com-twbs-bootstrap/v3.3.7/docs/examples/signin/signin.css}"  media="screen" rel="stylesheet"/>
+	<!-- <script src="@{webjars/github-com-twbs-bootstrap/v3.3.7/docs/assets/js/ie8-responsive-file-warning.js"></script> -->	
+  </head>
+  <body>
+    <div class="container">
+
+      <form class="form-signin" action="entrar" method="post">
+        <h2 class="form-signin-heading">Inicie sesión</h2>
+				
+<div class="alert alert-danger" role="alert">
+  <span th:text="${err}"/>
+</div>
+        <label for="Email" class="sr-only">Email address</label>
+        <input type="text" name="nombre" id="Email" class="form-control" placeholder="User" required="true" autofocus="true"/>
+        <label for="Password" class="sr-only">Password</label>
+        <input type="password" name="password" id="Password" class="form-control" placeholder="Password" required="true"/>
+        <div class="checkbox">
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" value="Entrar" >Sign in</button>
+      </form>
+
+    </div> <!-- /container -->
+
+  </body>
 </html>

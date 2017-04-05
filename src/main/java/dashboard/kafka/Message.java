@@ -1,6 +1,7 @@
 package dashboard.kafka;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import model.Categoria;
 import model.Comentario;
@@ -10,14 +11,19 @@ import model.VotoSugerencia;
 
 public class Message {
 	
-	public static final Gson gson = new Gson();
 
-    public static String getMessage(Sugerencia sugerencia) {
+	public static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+
+    public static String setMessage(Sugerencia sugerencia) {
         return gson.toJson(sugerencia);
     }
     
     public static String setMessage(Comentario comentario) {
     	return gson.toJson(comentario);
+    }
+    
+    public static String setMessage(Categoria categoria) {
+    	return gson.toJson(categoria);
     }
     
     public static String setMessage(VotoComentario votoComentario) {
@@ -78,5 +84,20 @@ public class Message {
         	return vSugg;
 		return null;
     }
+    /**
+     * Metodo que traduce de JSO a Categoria
+     * @param json
+     * @return
+     */
+    public static Categoria getCategoriaFromJSON(String json){
+    	final Gson gson = new Gson();
+        final Categoria cat = gson.fromJson(json, Categoria.class);
+        if(cat!=null)
+        	return cat;
+		return null;
+    }
+
+
+
 
 }

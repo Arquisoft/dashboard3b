@@ -1,6 +1,6 @@
 package controller;
 
-
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import business.CitizenService;
 import business.SystemService;
 import business.impl.CitizenServiceImpl;
@@ -29,9 +30,11 @@ import util.VerificadorEmail;
 @Controller
 @Scope("session")
 public class MainController {
-//	
-//	 @Autowired
-//	 private KafkaProducer kafkaProducer;
+	//
+	// @Autowired
+	// private KafkaProducer kafkaProducer;
+
+	private boolean test = true;
 
 	private static final Logger logger = Logger.getLogger(MainController.class);
 	private List<Object> sseEmitters = Collections
@@ -82,6 +85,39 @@ public class MainController {
 	public String getParticipantInfo(HttpSession session, Model modelo,
 			@RequestParam String nombre, @RequestParam String password) {
 
+		/******************
+		 * TEST ************************ Test administrador para acceder a
+		 * dashboard sin BD : Usuario: admin Password: admin
+		 * 
+		 * Test ciudadano para acceder a informacion sin BD: Usuario: ciudadano
+		 * Password: ciudadano
+		 * 
+		 * */
+		if (test) {
+			if (nombre.equals("admin") && password.equals("admin")) {
+				Administrador admin = new Administrador("admin", "admin");
+				session.setAttribute("user", admin);
+				session.setAttribute("tipo", "admin");
+				return "dashboard";
+
+			} else if (nombre.equals("ciudadano1")
+					&& password.equals("ciudadano")) {
+				Citizen citizen = new Citizen("testCitizen", "apellidos",
+						"testemail@email", new Date(0), "direccion",
+						"nacionalidad", "DNI", "ciudadano1", "ciudadano");
+
+				session.setAttribute("user", citizen);
+				session.setAttribute("tipo", "ciudadano");
+				modelo.addAttribute("user", citizen);
+				return "infoUsuario";
+			} else {
+				modelo.addAttribute("err", "Usuario no encontrado");
+				return "login";
+			}
+		}
+		/**
+	 * 
+	 * ******************************************************/
 		if (nombre.length() <= 0 || password.length() <= 0) {
 			modelo.addAttribute("err", "Complete todos los campos");
 			return "login";
@@ -98,7 +134,7 @@ public class MainController {
 
 				Citizen ciudadano = sService.findLoggableCitizen(nombre,
 						password);
-				if (ciudadano == null && admin==null) {
+				if (ciudadano == null && admin == null) {
 					modelo.addAttribute("err", "Usuario no encontrado");
 					return "login";
 				} else {
@@ -115,22 +151,22 @@ public class MainController {
 	}
 
 	//
-	// @RequestMapping(value = "/volverAinfo",
-	// method = RequestMethod.GET)
-	// public String getParticipantInfo(HttpSession session,Model
-	// modelo,@ModelAttribute("user") UserInfo usuario) {
-	// modelo.addAttribute("user", session.getAttribute("user"));
+	 @RequestMapping(value = "/volverAinfo",
+	 method = RequestMethod.GET)
+	 public String getParticipantInfo(HttpSession session,Model
+ modelo,
+			@ModelAttribute("user") Citizen usuario) {
+	 modelo.addAttribute("user", session.getAttribute("user"));
+	
+	 return "infoUsuario";
+	 }
 	//
-	// return "infoUsuario";
-	// }
-	//
-	// @RequestMapping(value = "/cambiarE")
-	// public String navegarCambiarEmail(Model modelo)
-	// {
-	// modelo.addAttribute("err", " ");
-	// return "cambiarEmail";
-	// }
-	//
+	@RequestMapping(value = "/cambiarE")
+	public String navegarCambiarEmail(Model modelo) {
+		modelo.addAttribute("err", " ");
+		return "cambiarEmail";
+	}
+
 	//
 	//
 	@RequestMapping(value = "/cambioEmail", method = RequestMethod.POST)
@@ -141,24 +177,28 @@ public class MainController {
 		Citizen user = (Citizen) session.getAttribute("user");
 
 		try {
+			if((test && password.equals("ciudadano")) || password.equals(Encriptador.desencriptar(user.getPassword()))){
 
-			if (!password.equals(Encriptador.desencriptar(user.getPassword()))) {
+				if (!VerificadorEmail.validateEmail(newEmail)) {
+					modelo.addAttribute("err", "Email incorrecto");
+					return "cambiarEmail";
+				}
+
+				modelo.addAttribute("err", "");
+				if(!test) cService.changeEmail(user, newEmail);
+				else user.setEmail(newEmail);
+				
+				session.setAttribute("user", user);
+				modelo.addAttribute("success",
+						"Se ha actualizado el email correctamente");
+				return "exito";
+
+			}
+			else{
 				modelo.addAttribute("err", "Contraseña incorrecta");
 				return "cambiarEmail";
 			}
-			if (!VerificadorEmail.validateEmail(newEmail)) {
-				modelo.addAttribute("err", "Email incorrecto");
-				return "cambiarEmail";
-			}
-
-			modelo.addAttribute("err", "");
-			cService.changeEmail(user, newEmail);
-			modelo.addAttribute("err", "");
-			session.setAttribute("user", user);
-			modelo.addAttribute("success",
-					"Se ha actualizado la contraseña correctamente");
-			return "exito";
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			modelo.addAttribute("err", e.getMessage());
