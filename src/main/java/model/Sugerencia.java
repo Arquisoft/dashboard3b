@@ -26,7 +26,7 @@ import persistence.util.Jpa;
 @Entity
 @Table(name="TSUGERENCIA")
 public class Sugerencia implements Serializable{
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Expose private long id;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Expose private long id=1;
 	@ManyToOne @Expose
 	private Citizen citizen;
 	@Expose private String titulo;
@@ -162,6 +162,9 @@ public class Sugerencia implements Serializable{
 				+ ", categoria=" + categoria + "]";
 	}
 	
+	public void setId(Long id){
+		this.id=id;
+	}
 	
 	
 }

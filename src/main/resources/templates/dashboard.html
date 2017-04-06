@@ -1,21 +1,29 @@
-<!DOCTYPE html> 
-<html xmlns:th="http://www.thymeleaf.org">
-   <head>
-	
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org"
+xmlns:p="http://primefaces.org/ui">
+  <head>
+    <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <meta charset="utf-8"/> 
-    <title>Signin </title>
+    
 
-    <link th:href="@{/webjars/github-com-twbs-bootstrap/v3.3.7/docs/dist/css/bootstrap.min.css}" media="screen" rel="stylesheet"/>
+    <title>Dashboard Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+     <link th:href="@{/webjars/github-com-twbs-bootstrap/v3.3.7/docs/dist/css/bootstrap.min.css}" media="screen" rel="stylesheet"/>
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link th:href="@{/webjars/github-com-twbs-bootstrap/v3.3.7/docs/assets/css/ie10-viewport-bug-workaround.css}"  media="screen" rel="stylesheet"/>
-    <link th:href="@{/webjars/github-com-twbs-bootstrap/v3.3.7/docs/examples/signin/signin.css}"  media="screen" rel="stylesheet"/>
-	<!-- <script src="@{webjars/github-com-twbs-bootstrap/v3.3.7/docs/assets/js/ie8-responsive-file-warning.js"></script> -->	
+    
+    <!-- Custom styles for this template -->
+    <link href="@{/webjars/github-com-twbs-bootstrap/v3.3.7/docs/examples/dashboard/dashboard.css}" rel="stylesheet"/>
+    
   </head>
-  
+
   <body>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -31,42 +39,81 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Cuadro de mandos</a></li>
-            <li><a href="#">Test kafka</a></li>
+            <li><a href="#">Dashboard</a></li>
             <li><a href="#">Perfil</a></li>
-            <li><a href="#"> </a></li>
+            <li><a href="/salir">Salir</a></li>
           </ul>
-      
         </div>
       </div>
     </nav>
-
    
+   	
+	<p>
+	
+	
 
-          <h2 class="sub-header">Sugerencias</h2>
+	<hr/>
+	
+	</p>
+	<h1 class="page-header">Dashboard</h1>
+   <div class="panel panel-default">
+  <div class="panel-body">
+  
+    <h3 class="sub-header">Panel test</h3>
+	<div class="panel panel-danger">
+	<a class="btn btn-primary" role="button" data-toggle="collapse" href="/enviarTestSugerencia" aria-expanded="false" aria-controls="collapseExample">
+ 		 Eviar sugerencia	 
+	</a>
+	<a class="btn btn-primary" role="button" data-toggle="collapse" href="/limpiar" aria-expanded="false" aria-controls="collapseExample">
+ 		 Limpiar
+	</a>
+	
+	 <div class="panel-heading">Mensajes</div>
+
+ <div id="data" name="data">
+  <div th:each="item : ${mensajes}">
+ 	 <p th:text="${item}" />
+	</div>
+	</div>
+	
+  <div class="panel-body">    
+
+	
+  </div>
+	
+	
+	</div>
+  
+
+          <h3 class="sub-header">Sugerencias</h3>
+          
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table id="tabla" class="table table-striped">
               <thead>
                 <tr>
-                  <th># ID</th>
-                  <th> Titulo</th>
-                    <th><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Likes</th>
-                 	 <th><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> Dislikes</th>
+                  <th>#Id</th>
+                  <th>Titulo</th>
+                  <th>Autor</th>
+                  <th>Likes</th>
+                  <th>Dislikes</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Sugerencia 1</td>
-                  <td>1</td>
-                  <td>0</td>
+                <tr th:each="item,iterationStatus   : ${sugerencias}">
+                  <td th:text="${item.id}">1,001</td>
+                  <td th:text="${item.titulo}">Lorem</td>
+                  <td th:text="${item.citizen.usuario}">ipsum</td>
+                  <td th:text="${item.getPosVotes()}">dolor</td>
+                   <td th:text="${item.getNegVotes()}">dolor</td>
                 </tr>
               </tbody>
             </table>
-       
-        </div>
-    
+          </div>
 
 
+  </div>
+</div>
   </body>
 </html>
+
+

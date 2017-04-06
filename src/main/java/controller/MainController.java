@@ -7,11 +7,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import kafka.producers.KafkaProducer;
 import model.Administrador;
 import model.Citizen;
+import model.Sugerencia;
 import model.exception.BusinessException;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.mysql.cj.core.util.TestUtils;
 
 import business.CitizenService;
 import business.SystemService;
@@ -30,28 +35,28 @@ import util.VerificadorEmail;
 @Controller
 @Scope("session")
 public class MainController {
-	//
-	// @Autowired
-	// private KafkaProducer kafkaProducer;
 
 	private boolean test = true;
+	private Citizen testCitizen = new Citizen("NombreDeTest", "ApellidosDeTest",
+			"testemail@email", new Date(0), "C\\direccionDeTest", "Esp", "71905648",
+			"ciudadano1", "ciudadano");
+	private Administrador testAdmin = new Administrador("admin", "admin");
 
 	private static final Logger logger = Logger.getLogger(MainController.class);
 	private List<Object> sseEmitters = Collections
 			.synchronizedList(new ArrayList<>());
+
+	@Autowired
+	private Estadisticas estadisticas;
+
+//	@Autowired
+//	private KafkaProducer kafkaProducer;
 
 	@RequestMapping("/")
 	public String landing(Model model) {
 		return "login";
 	}
 
-	//
-	// @RequestMapping("/hola")
-	// public String hola(Model model) {
-	// model.addAttribute("nombre", "Luis");
-	// return "saludo";
-	// }
-	//
 	@RequestMapping("/inicio")
 	public String log() {
 		return "login";
@@ -62,7 +67,7 @@ public class MainController {
 	public String salir(Model model, HttpSession session) {
 		session.removeAttribute("user");
 		model.addAttribute("user", null);
-
+		logger.info("Cerrando sesion");
 		return "login";
 
 	}
@@ -78,46 +83,59 @@ public class MainController {
 	// session.setAttribute("user", user);
 	// return "infoUsuario";
 	// }
-	//
-	//
-	//
+
+	/**
+	 * Metodo que gestion la peticion que permite loguearse
+	 * 
+	 * @param session
+	 * @param modelo
+	 * @param nombre
+	 * @param password
+	 * @return
+	 */
 	@RequestMapping(value = "/entrar", method = RequestMethod.POST)
 	public String getParticipantInfo(HttpSession session, Model modelo,
 			@RequestParam String nombre, @RequestParam String password) {
 
 		/******************
-		 * TEST ************************ Test administrador para acceder a
-		 * dashboard sin BD : Usuario: admin Password: admin
+		 * TEST ************************
+		 * 
+		 * Test administrador para acceder a dashboard sin BD : Usuario: admin
+		 * Password: admin
 		 * 
 		 * Test ciudadano para acceder a informacion sin BD: Usuario: ciudadano
 		 * Password: ciudadano
 		 * 
 		 * */
+		logger.info("Iniciando sesion");
 		if (test) {
-			if (nombre.equals("admin") && password.equals("admin")) {
-				Administrador admin = new Administrador("admin", "admin");
-				session.setAttribute("user", admin);
+			if (nombre.equals(testAdmin.getUsuario())
+					&& password.equals(testAdmin.getPassword())) {
+
+				session.setAttribute("user", testAdmin);
 				session.setAttribute("tipo", "admin");
+				// modelo.setAttribute("mensajes" )
+				modelo.addAttribute("mensajes", estadisticas.getMensajes());
+
 				return "dashboard";
 
-			} else if (nombre.equals("ciudadano1")
-					&& password.equals("ciudadano")) {
-				Citizen citizen = new Citizen("testCitizen", "apellidos",
-						"testemail@email", new Date(0), "direccion",
-						"nacionalidad", "DNI", "ciudadano1", "ciudadano");
+			} else if (nombre.equals(testCitizen.getUsuario())
+					&& password.equals(testCitizen.getPassword())) {
 
-				session.setAttribute("user", citizen);
+				session.setAttribute("user", testCitizen);
 				session.setAttribute("tipo", "ciudadano");
-				modelo.addAttribute("user", citizen);
+				modelo.addAttribute("user", testCitizen);
 				return "infoUsuario";
 			} else {
 				modelo.addAttribute("err", "Usuario no encontrado");
 				return "login";
 			}
 		}
-		/**
-	 * 
-	 * ******************************************************/
+		
+		/*******************************************************
+		 * 	El codigo anterior permite realizar pruebas, 
+		 * 	el codigo siguiente sigue el funcionamiento correcto.
+		 * ******************************************************/
 		if (nombre.length() <= 0 || password.length() <= 0) {
 			modelo.addAttribute("err", "Complete todos los campos");
 			return "login";
@@ -151,24 +169,38 @@ public class MainController {
 	}
 
 	//
-	 @RequestMapping(value = "/volverAinfo",
-	 method = RequestMethod.GET)
-	 public String getParticipantInfo(HttpSession session,Model
- modelo,
+	@RequestMapping(value = "/volverAinfo", method = RequestMethod.GET)
+	public String getParticipantInfo(HttpSession session, Model modelo,
 			@ModelAttribute("user") Citizen usuario) {
-	 modelo.addAttribute("user", session.getAttribute("user"));
-	
-	 return "infoUsuario";
-	 }
-	//
+
+		modelo.addAttribute("user", session.getAttribute("user"));
+
+		return "infoUsuario";
+	}
+
+	/**
+	 * Metodo que permite navegar a la pagina para cambiar el email
+	 * 
+	 * @param modelo
+	 * @return
+	 */
 	@RequestMapping(value = "/cambiarE")
-	public String navegarCambiarEmail(Model modelo) {
+	public String navegarCambiarEmail(HttpSession session, Model modelo) {
 		modelo.addAttribute("err", " ");
+		modelo.addAttribute("user", session.getAttribute("user"));
 		return "cambiarEmail";
 	}
 
-	//
-	//
+	/**
+	 * Metodo que se encarga del cambio de email
+	 * 
+	 * @param session
+	 * @param modelo
+	 * @param usuario
+	 * @param password
+	 * @param newEmail
+	 * @return
+	 */
 	@RequestMapping(value = "/cambioEmail", method = RequestMethod.POST)
 	public String changeEmail(HttpSession session, Model modelo,
 			@ModelAttribute("user") Citizen usuario,
@@ -177,7 +209,9 @@ public class MainController {
 		Citizen user = (Citizen) session.getAttribute("user");
 
 		try {
-			if((test && password.equals("ciudadano")) || password.equals(Encriptador.desencriptar(user.getPassword()))){
+			if ((test && password.equals("ciudadano"))
+					|| password.equals(Encriptador.desencriptar(user
+							.getPassword()))) {
 
 				if (!VerificadorEmail.validateEmail(newEmail)) {
 					modelo.addAttribute("err", "Email incorrecto");
@@ -185,74 +219,116 @@ public class MainController {
 				}
 
 				modelo.addAttribute("err", "");
-				if(!test) cService.changeEmail(user, newEmail);
-				else user.setEmail(newEmail);
-				
+				if (!test)
+					cService.changeEmail(user, newEmail);
+				else
+					user.setEmail(newEmail);
+
 				session.setAttribute("user", user);
 				modelo.addAttribute("success",
 						"Se ha actualizado el email correctamente");
+				logger.info("Se ha actualizado el email correctamente");
 				return "exito";
 
-			}
-			else{
+			} else {
 				modelo.addAttribute("err", "Contraseña incorrecta");
+				logger.info("Contraseña incorrecta al actualizar email");
 				return "cambiarEmail";
 			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			logger.info("Error al cambiar el email");
+			modelo.addAttribute("err", e.getMessage());
+			return "error";
+		}
+	}
+
+	//
+	
+	@RequestMapping(value = "/cambiarP")
+	public String navegarCambiarContrasena(Model modelo,
+			@ModelAttribute("user") Citizen usuario) {
+		modelo.addAttribute("user", usuario);
+		modelo.addAttribute("err", " ");
+		return "cambiarPass";
+	}
+
+	//
+	//
+	@RequestMapping(value = "/cambio", method = RequestMethod.POST)
+	public String changePassword(HttpSession session, Model modelo,
+			@ModelAttribute("user") Citizen usuario,
+			@RequestParam String password, @RequestParam String newPassword1,
+			@RequestParam String newPassword2) {
+		CitizenService cService = new CitizenServiceImpl();
+		Citizen user = (Citizen) session.getAttribute("user");
+		try {
+
+			if (!password.equals(Encriptador.desencriptar(user.getPassword())) && !test) {
+				modelo.addAttribute("err", "Contraseña incorrecta");
+				return "cambiarPass";
+			}
+			if(test && !testCitizen.getPassword().equals(password)){
+				modelo.addAttribute("err", "Contraseña incorrecta");
+				return "cambiarPass";
+			}
+			if (newPassword1.length() <= 0) {
+				modelo.addAttribute("err", "Escriba la nueva contraseña");
+				return "cambiarPass";
+			}
+			if (!newPassword1.equals(newPassword2)) {
+				modelo.addAttribute("err", "Las contraseñas deben coincidir");
+				return "cambiarPass";
+			}
+
+			modelo.addAttribute("err", "");
+			if(!test)
+				cService.changePassword(user, newPassword1);
+			else {
+				user.setPassword(newPassword1);
+			}
 			
+			modelo.addAttribute("err", "");
+			modelo.addAttribute("user", user);
+			session.setAttribute("user", user);
+			modelo.addAttribute("success",
+					"Se ha actualizado la contraseña correctamente");
+			logger.info("La contraseña ha sido cambiada con exito");
+			return "exito";
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			modelo.addAttribute("err", e.getMessage());
 			return "error";
 		}
 	}
-	//
-	// @RequestMapping(value = "/cambiar")
-	// public String navegarCambiarContrasena( Model modelo,
-	// @ModelAttribute("user") UserInfo usuario)
-	// {
-	// modelo.addAttribute("user",usuario);
-	// modelo.addAttribute("err", " ");
-	// return "cambiarPass";
-	// }
-	//
-	//
-	// @RequestMapping(value = "/cambio",
-	// method = RequestMethod.POST)
-	// public String changePassword(HttpSession session, Model
-	// modelo,@ModelAttribute("user") UserInfo usuario, @RequestParam String
-	// password,
-	// @RequestParam String newPassword1,@RequestParam String newPassword2){
-	// userService = new CitizenServiceImpl();
-	// UserInfo user = (UserInfo) session.getAttribute("user");
-	// try {
-	//
-	// if(!password.equals(Encriptador.desencriptar(user.getPassword()))){
-	// modelo.addAttribute("err", "Contraseña incorrecta");
-	// return "cambiarPass";
-	// }
-	// if(newPassword1.length()<=0) {
-	// modelo.addAttribute("err", "Escriba la nueva contraseña");
-	// return "cambiarPass";
-	// }
-	// if(!newPassword1.equals(newPassword2)){
-	// modelo.addAttribute("err", "Las contraseñas deben coincidir");
-	// return "cambiarPass";
-	// }
-	//
-	// modelo.addAttribute("err", "");
-	// userService.changePassword(user, newPassword1);
-	// modelo.addAttribute("err","");
-	// modelo.addAttribute("user", user);
-	// session.setAttribute("user", user);
-	// modelo.addAttribute("success","Se ha actualizado la contraseña correctamente");
-	// return "exito";
-	//
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// modelo.addAttribute("err",e.getMessage());
-	// return "error";
-	// }
-	// }
-	//
 
+	@RequestMapping("/enviarTestSugerencia")
+	public String send(Model model) {
+		estadisticas.añadirMensaje("Enviando sugerencia");
+		estadisticas.sendProposalMessagesCouncilstaff();
+		// kProducer.send("CREATE_SUGGESTION", );
+		return "dashboard";
+	}
+
+	@RequestMapping("/limpiar")
+	public String limpiarMensajes(Model model){
+		estadisticas.limpiar();
+		return "dashboard";
+	}
+	@ModelAttribute("sugerencias")
+	public List<Sugerencia> getSugerencias() {
+		return estadisticas.getTopSugerencias();
+	}
+
+	@ModelAttribute("mensajes")
+	public List<String> getMensajes() {
+		return estadisticas.getMensajes();
+	}
+
+	public Estadisticas getEstadisticas() {
+		return estadisticas;
+	}
 }

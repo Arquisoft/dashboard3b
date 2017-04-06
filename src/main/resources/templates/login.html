@@ -19,12 +19,12 @@
     <div class="container">
 
       <form class="form-signin" action="entrar" method="post">
-        <h2 class="form-signin-heading">Inicie sesión</h2>
+        <h1 class="form-signin-heading">Inicie sesión</h1>
 				
-<div class="alert alert-danger" role="alert">
-  <span th:text="${err}"/>
-</div>
-        <label for="Email" class="sr-only">Email address</label>
+
+ <h3> <span th:text="${err}"/></h3>
+
+        <label for="Email" class="sr-only">Usuario</label>
         <input type="text" name="nombre" id="Email" class="form-control" placeholder="User" required="true" autofocus="true"/>
         <label for="Password" class="sr-only">Password</label>
         <input type="password" name="password" id="Password" class="form-control" placeholder="Password" required="true"/>

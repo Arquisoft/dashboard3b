@@ -1,5 +1,6 @@
 package business.impl;
 
+import scala.NotImplementedError;
 import model.Administrador;
 import model.Categoria;
 import model.exception.BusinessException;
@@ -32,7 +33,7 @@ public class AdminServiceImpl extends SuperService implements AdminService {
 
 	@Override
 	public void addCategoria(Categoria categoria) throws BusinessException {
-		// TODO Auto-generated method stub
+		throw new NotImplementedError();
 		
 	}
 

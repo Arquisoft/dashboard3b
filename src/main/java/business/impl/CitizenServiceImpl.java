@@ -1,6 +1,7 @@
 package business.impl;
 
 import persistence.CitizenFinder;
+import scala.NotImplementedError;
 import util.Encriptador;
 import business.CitizenService;
 import business.impl.citizen.*;
@@ -21,13 +22,13 @@ public class CitizenServiceImpl extends SuperService implements CitizenService {
 
 	@Override
 	public void deleteSugerencia(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
+		throw new NotImplementedError();
 		
 	}
 
 	@Override
 	public void deleteComentario(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
+		throw new NotImplementedError();
 		
 	}
 

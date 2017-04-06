@@ -1,4 +1,4 @@
-package dashboard.kafka;
+package kafka;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -1,8 +1,8 @@
 package business.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import kafka.producers.*;
 
-import dashboard.kafka.producers.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class SuperService {
 	

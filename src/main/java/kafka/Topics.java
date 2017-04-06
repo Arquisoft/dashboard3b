@@ -1,6 +1,6 @@
-package dashboard.kafka;
+package kafka;
 
-public class Topics {
+ public class Topics {
 	public final static String CREATE_SUGGESTION = "CREATE_SUGGESTION";
 	public final static String DELETE_SUGGESTION ="DELETE_SUGGESTION";
 	public final static String VOTE_SUGGESTION_POSITIVE = "VOTE_SUGGESTION_POSITIVE";

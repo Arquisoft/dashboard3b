@@ -41,8 +41,16 @@ public class MainControllerTest {
 	public void getLanding() throws Exception {
 		String userURI = base.toString() + "/user";  
 		ResponseEntity<String> response = template.getForEntity(base.toString(), String.class);
-		assertThat(response.getBody(), containsString("Hola"));
+		assertThat(response.getBody(), containsString("Usuario"));
 	}
+	
+	@Test
+	public void getError() throws Exception {
+		String userURI = base.toString() + "/error";  
+		ResponseEntity<String> response = template.getForEntity(base.toString(), String.class);
+		assertThat(response.getBody(), containsString("Volver al login"));
+	}
+	
 	
 	@Test
 	public void getUser() throws Exception {

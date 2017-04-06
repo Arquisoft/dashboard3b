@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
+import kafka.Message;
 import model.Categoria;
 import model.Citizen;
 import model.Comentario;
@@ -19,7 +20,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import controller.Application;
-import dashboard.kafka.Message;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

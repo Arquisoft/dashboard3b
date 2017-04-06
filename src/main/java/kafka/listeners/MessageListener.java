@@ -1,16 +1,18 @@
-package dashboard.kafka.listeners;
+package kafka.listeners;
 
 import javax.annotation.ManagedBean;
 
+import kafka.Message;
 import model.Comentario;
 import model.Sugerencia;
 import model.VotoComentario;
 import model.VotoSugerencia;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 
-import dashboard.kafka.Message;
+import controller.Estadisticas;
 
 /**
  * Created by herminio on 28/12/16.
@@ -20,6 +22,9 @@ public class MessageListener {
 
     private static final Logger logger = Logger.getLogger(MessageListener.class);
 
+    @Autowired
+    Estadisticas estadisticas;
+    
     @KafkaListener(topics = "exampleTopic")
     public void listen(String data) {
         logger.info("New message received: \"" + data + "\"");
@@ -29,6 +34,8 @@ public class MessageListener {
     public void createSuggestion(String data) {
     	Sugerencia sugg = Message.getSugerenciaFromJSON(data);
         logger.info("New message received: [CREAR SUGERENCIA]  \"" +  data + "\"");
+        estadisticas.añadirMensaje("[CREAR SUGERENCIA] Autor de la accion [id="+sugg.getCitizen().getId()+"] " + sugg.getCitizen().getNombre() + 
+        		"  [id=" + sugg.getId() + "] " + sugg.getTitulo());
         
         logger.info("[CREAR SUGERENCIA] Autor de la accion [id="+sugg.getCitizen().getId()+"] " + sugg.getCitizen().getNombre() + 
         		"  [id=" + sugg.getId() + "] " + sugg.getTitulo());
