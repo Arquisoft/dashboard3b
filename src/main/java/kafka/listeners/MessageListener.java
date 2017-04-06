@@ -34,9 +34,9 @@ public class MessageListener {
     public void createSuggestion(String data) {
     	Sugerencia sugg = Message.getSugerenciaFromJSON(data);
         logger.info("New message received: [CREAR SUGERENCIA]  \"" +  data + "\"");
-        estadisticas.añadirMensaje("[CREAR SUGERENCIA] Autor de la accion [id="+sugg.getCitizen().getId()+"] " + sugg.getCitizen().getNombre() + 
+        estadisticas.añadirMensaje("*Received -> [CREAR SUGERENCIA] Autor de la accion [id="+sugg.getCitizen().getId()+"] " + sugg.getCitizen().getNombre() + 
         		"  [id=" + sugg.getId() + "] " + sugg.getTitulo());
-        
+        estadisticas.añadirSugerencia(sugg);
         logger.info("[CREAR SUGERENCIA] Autor de la accion [id="+sugg.getCitizen().getId()+"] " + sugg.getCitizen().getNombre() + 
         		"  [id=" + sugg.getId() + "] " + sugg.getTitulo());
     }
