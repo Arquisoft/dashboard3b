@@ -2,7 +2,6 @@ package business.impl.citizen;
 
 import business.impl.Command;
 import model.Citizen;
-import model.Sugerencia;
 import model.exception.BusinessException;
 import persistence.util.Jpa;
 

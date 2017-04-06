@@ -21,7 +21,7 @@ import java.util.Map;
 @EnableKafka
 public class KafkaListenerFactory {
 
-    @Bean
+//    @Bean
     KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<Integer, String>> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<Integer, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();

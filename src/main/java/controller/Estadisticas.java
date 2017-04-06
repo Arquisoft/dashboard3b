@@ -5,21 +5,14 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.annotation.Resource;
-
-import kafka.Message;
-import kafka.Topics;
-import kafka.producers.KafkaProducer;
 import model.Categoria;
 import model.Citizen;
-import model.Comentario;
+
 import model.Sugerencia;
 import model.VotoSugerencia;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @ManagedBean(value="estadisticas")
 @Scope("session") 	 	

@@ -1,13 +1,11 @@
 package controller;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import kafka.producers.KafkaProducer;
 import model.Administrador;
 import model.Citizen;
 import model.Sugerencia;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.mysql.cj.core.util.TestUtils;
 
 import business.CitizenService;
 import business.SystemService;
@@ -43,8 +40,7 @@ public class MainController {
 	private Administrador testAdmin = new Administrador("admin", "admin");
 
 	private static final Logger logger = Logger.getLogger(MainController.class);
-	private List<Object> sseEmitters = Collections
-			.synchronizedList(new ArrayList<>());
+	//private List<Object> sseEmitters = Collections.synchronizedList(new ArrayList<>());
 
 	@Autowired
 	private Estadisticas estadisticas;
