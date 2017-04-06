@@ -48,7 +48,7 @@ public class MainControllerTest {
 	public void getError() throws Exception {
 		String userURI = base.toString() + "/error";  
 		ResponseEntity<String> response = template.getForEntity(base.toString(), String.class);
-		assertThat(response.getBody(), containsString("Volver al login"));
+		assertThat(response.getBody(), containsString("Inicie"));
 	}
 	
 	
